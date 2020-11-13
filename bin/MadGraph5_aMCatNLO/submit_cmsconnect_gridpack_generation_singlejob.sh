@@ -14,7 +14,7 @@ cat<<-EOF
 	Log = condor_log/job.log.\$(Cluster) 
 	
 	#transfer_input_files = $input_files, gridpack_generation.sh, runcmsgrid_LO.sh, runcmsgrid_NLO.sh, cleangridmore.sh, /usr/bin/unzip
-	transfer_input_files = $input_files, gridpack_generation.sh
+	transfer_input_files = $input_files, gridpack_generation.sh, Utilities/gridpack_helpers.sh
 	transfer_output_files = ${card_name}.log
 	should_transfer_files = YES
 	when_to_transfer_output = ON_EXIT_OR_EVICT
@@ -42,6 +42,9 @@ cat<<-EOF
 
 	# Purdue wokaround
 	unset CXX CC FC
+	# Put gridpack helpers script in standard place
+	mkdir -p ${PRODHOME%genproductions*}/genproductions/Utilities
+	cp gridpack_helpers.sh ${PRODHOME%genproductions*}/genproductions/Utilities
 	# Run
 	PATH=\$PATH:$PWD iscmsconnect=1 bash -x gridpack_generation.sh "${card_name}" "${card_dir}" "${workqueue}" ALL "${scram_arch}" "${cmssw_version}"
 	exitcode=\$?
